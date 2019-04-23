@@ -82,7 +82,7 @@ lazy_static! {
     };
     static ref FUNC_INFLIGHT: prometheus::IntGaugeVec = {
         let gauge_opts = prometheus::Opts::new(
-            "function_inflight",
+            "function_calls_inflight",
             "Number of function calls currently in flight",
         );
         let gauge = prometheus::IntGaugeVec::new(gauge_opts, &["name"]).unwrap();
