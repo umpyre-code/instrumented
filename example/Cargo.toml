@@ -1,0 +1,10 @@
+[package]
+name = "instrumented-example"
+version = "0.1.0"
+authors = ["Brenden Matthews <brenden@diddyinc.com>"]
+edition = "2018"
+
+[dependencies]
+instrumented = { path = "../core/lib" }
+log = "0.4"
+reqwest = "0.9"

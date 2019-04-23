@@ -1,0 +1,13 @@
+[package]
+name = "instrumented"
+version = "0.1.0"
+authors = ["Brenden Matthews <brenden@diddyinc.com>"]
+edition = "2018"
+
+[dependencies]
+hyper = "0.12"
+instrumented-codegen = { path = "../codegen" }
+lazy_static = "1.0"
+log = "0.4"
+prometheus = { git = "https://github.com/pingcap/rust-prometheus.git",  features = ["nightly", "process"]}
+tokio = "0.1"

@@ -1,0 +1,57 @@
+# Instrumented 🎸
+
+Observe your service.
+
+## Example
+
+```rust
+extern crate instrumented;
+extern crate log;
+extern crate reqwest;
+
+use instrumented::instrument;
+
+#[instrument(INFO)]
+fn my_func() {
+    use std::{thread, time};
+    let ten_millis = time::Duration::from_millis(10);
+    thread::sleep(ten_millis);
+}
+
+#[derive(Debug)]
+pub struct MyError;
+
+#[instrument(INFO)]
+fn my_func_with_ok_result() -> Result<String, MyError> {
+    use std::{thread, time};
+    let ten_millis = time::Duration::from_millis(10);
+    thread::sleep(ten_millis);
+
+    Ok(String::from("hello world"))
+}
+
+#[instrument(INFO)]
+fn my_func_with_err_result() -> Result<String, MyError> {
+    use std::{thread, time};
+    let ten_millis = time::Duration::from_millis(10);
+    thread::sleep(ten_millis);
+
+    Err(MyError)
+}
+
+fn main() {
+    let addr = "127.0.0.1:5000".to_string();
+    instrumented::init(&addr);
+
+    my_func();
+    assert_eq!(my_func_with_ok_result().is_ok(), true);
+    assert_eq!(my_func_with_err_result().is_err(), true);
+
+    let body = reqwest::get(&format!("http://{}/metrics", addr))
+        .unwrap()
+        .text()
+        .unwrap();
+
+    println!("{}", body);
+}
+```
