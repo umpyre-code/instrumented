@@ -2,7 +2,7 @@ extern crate instrumented;
 extern crate log;
 extern crate reqwest;
 
-use instrumented::instrument;
+use instrumented::{instrument, prometheus};
 
 #[instrument(INFO)]
 fn my_func() {
@@ -39,6 +39,11 @@ fn main() {
     my_func();
     assert_eq!(my_func_with_ok_result().is_ok(), true);
     assert_eq!(my_func_with_err_result().is_err(), true);
+
+    // Add a custom counter
+    let counter = prometheus::IntCounter::new("custom_counter", "My custom counter").unwrap();
+    instrumented::register(Box::new(counter.clone())).unwrap();
+    counter.inc_by(10);
 
     let body = reqwest::get(&format!("http://{}/metrics", addr))
         .unwrap()

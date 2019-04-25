@@ -12,15 +12,18 @@ extern crate lazy_static;
 #[macro_use]
 extern crate log;
 extern crate hyper;
-extern crate prometheus;
 #[allow(unused_imports)]
 #[macro_use]
 extern crate instrumented_codegen;
 
 #[doc(hidden)]
 pub use instrumented_codegen::*;
-#[doc(hidden)]
-pub use prometheus::*;
+
+pub mod prometheus {
+    extern crate prometheus;
+    #[doc(hidden)]
+    pub use self::prometheus::*;
+}
 
 use hyper::http::StatusCode;
 use hyper::rt::Future;
@@ -36,8 +39,8 @@ fn register_default_process_collector(reg: &Registry) -> Result<()> {
 }
 
 lazy_static! {
-    static ref DEFAULT_REGISTRY: Registry = {
-        let reg = Registry::default();
+    static ref DEFAULT_REGISTRY: prometheus::Registry = {
+        let reg = prometheus::Registry::default();
 
         // Register a default process collector.
         #[cfg(all(target_os = "linux"))]
@@ -135,6 +138,7 @@ pub fn init(addr: &str) {
             // `service_fn_ok` is a helper to convert a function that
             // returns a Response into a `Service`.
             service_fn_ok(move |req: Request<Body>| {
+                use crate::prometheus::*;
                 if req.uri().path() == "/metrics" {
                     let metric_families = DEFAULT_REGISTRY.gather();
                     let mut buffer = vec![];
@@ -170,6 +174,6 @@ pub fn init(addr: &str) {
 }
 
 /// Register a collector with the global registry.
-pub fn register(c: Box<prometheus::core::Collector>) -> Result<()> {
+pub fn register(c: Box<prometheus::core::Collector>) -> prometheus::Result<()> {
     DEFAULT_REGISTRY.register(c)
 }
