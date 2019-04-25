@@ -157,3 +157,8 @@ pub fn init(addr: &str) {
         rt.shutdown_on_idle().wait().unwrap();
     });
 }
+
+/// Register a collector with the global registry.
+pub fn register(c: Box<prometheus::core::Collector>) -> Result<(), prometheus::Error> {
+    DEFAULT_REGISTRY.register(c)
+}
