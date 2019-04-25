@@ -65,7 +65,7 @@ lazy_static! {
             "function_error",
             "Number of times the result of a function was an error",
         );
-        let counter = prometheus::IntCounterVec::new(counter_opts, &["type","name","ctx"]).unwrap();
+        let counter = prometheus::IntCounterVec::new(counter_opts, &["type","name","ctx","err"]).unwrap();
 
         DEFAULT_REGISTRY
             .register(Box::new(counter.clone())).unwrap();
@@ -104,9 +104,9 @@ pub fn inc_called_counter_for(name: &'static str, ctx: &'static str) {
         .inc();
 }
 
-pub fn inc_error_counter_for(name: &'static str, ctx: &'static str) {
+pub fn inc_error_counter_for(name: &'static str, ctx: &'static str, err: String) {
     FUNC_ERRORS
-        .with_label_values(&["func_call", name, ctx])
+        .with_label_values(&["func_call", name, ctx, &err])
         .inc();
 }
 

@@ -214,7 +214,7 @@ fn generate_function(
                     })
                     .map_err(|err| {
                         #err_expr;
-                        ::instrumented::inc_error_counter_for(#function_name, #ctx);
+                        ::instrumented::inc_error_counter_for(#function_name, #ctx, format!("{:?}", err));
                         ::instrumented::dec_inflight_for(#function_name, #ctx);
                         err
                     })
