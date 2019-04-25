@@ -49,7 +49,7 @@ lazy_static! {
             "function_called",
             "Number of times a function was called",
         );
-        let counter = prometheus::IntCounterVec::new(counter_opts, &["name"]).unwrap();
+        let counter = prometheus::IntCounterVec::new(counter_opts, &["type","name","ctx"]).unwrap();
 
         DEFAULT_REGISTRY
             .register(Box::new(counter.clone())).unwrap();
@@ -61,7 +61,7 @@ lazy_static! {
             "function_error",
             "Number of times the result of a function was an error",
         );
-        let counter = prometheus::IntCounterVec::new(counter_opts, &["name"]).unwrap();
+        let counter = prometheus::IntCounterVec::new(counter_opts, &["type","name","ctx"]).unwrap();
 
         DEFAULT_REGISTRY
             .register(Box::new(counter.clone())).unwrap();
@@ -73,7 +73,7 @@ lazy_static! {
             "function_timer",
             "Histogram of function call times observed",
         );
-        let histogram = prometheus::HistogramVec::new(histogram_opts, &["name"]).unwrap();
+        let histogram = prometheus::HistogramVec::new(histogram_opts, &["type","name","ctx"]).unwrap();
 
         DEFAULT_REGISTRY
             .register(Box::new(histogram.clone())).unwrap();
@@ -85,7 +85,7 @@ lazy_static! {
             "function_calls_inflight",
             "Number of function calls currently in flight",
         );
-        let gauge = prometheus::IntGaugeVec::new(gauge_opts, &["name"]).unwrap();
+        let gauge = prometheus::IntGaugeVec::new(gauge_opts, &["type","name","ctx"]).unwrap();
 
         DEFAULT_REGISTRY
             .register(Box::new(gauge.clone())).unwrap();
@@ -94,24 +94,34 @@ lazy_static! {
     };
 }
 
-pub fn inc_called_counter_for(name: &'static str) {
-    FUNC_CALLED.with_label_values(&[name]).inc();
+pub fn inc_called_counter_for(name: &'static str, ctx: &'static str) {
+    FUNC_CALLED
+        .with_label_values(&["func_call", name, ctx])
+        .inc();
 }
 
-pub fn inc_error_counter_for(name: &'static str) {
-    FUNC_ERRORS.with_label_values(&[name]).inc();
+pub fn inc_error_counter_for(name: &'static str, ctx: &'static str) {
+    FUNC_ERRORS
+        .with_label_values(&["func_call", name, ctx])
+        .inc();
 }
 
-pub fn get_timer_for(name: &'static str) -> prometheus::HistogramTimer {
-    FUNC_TIMER.with_label_values(&[name]).start_timer()
+pub fn get_timer_for(name: &'static str, ctx: &'static str) -> prometheus::HistogramTimer {
+    FUNC_TIMER
+        .with_label_values(&["func_call", name, ctx])
+        .start_timer()
 }
 
-pub fn inc_inflight_for(name: &'static str) {
-    FUNC_INFLIGHT.with_label_values(&[name]).inc();
+pub fn inc_inflight_for(name: &'static str, ctx: &'static str) {
+    FUNC_INFLIGHT
+        .with_label_values(&["func_call", name, ctx])
+        .inc();
 }
 
-pub fn dec_inflight_for(name: &'static str) {
-    FUNC_INFLIGHT.with_label_values(&[name]).dec();
+pub fn dec_inflight_for(name: &'static str, ctx: &'static str) {
+    FUNC_INFLIGHT
+        .with_label_values(&["func_call", name, ctx])
+        .dec();
 }
 
 /// Initializes the metrics context, and starts an HTTP server

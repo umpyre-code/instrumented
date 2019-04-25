@@ -21,17 +21,24 @@ use syn::{
 struct FormattedAttributes {
     ok_expr: TokenStream,
     err_expr: TokenStream,
+    ctx: String,
 }
 
 impl FormattedAttributes {
-    pub fn parse_attributes(attr: &[NestedMeta], fmt_default: &str) -> darling::Result<Self> {
-        Options::from_list(attr).map(|opts| Self::get_ok_err_streams(&opts, fmt_default))
+    pub fn parse_attributes(
+        attr: &[NestedMeta],
+        fmt_default: &str,
+        ctx_default: &str,
+    ) -> darling::Result<Self> {
+        Options::from_list(attr)
+            .map(|opts| Self::get_ok_err_streams(&opts, fmt_default, ctx_default))
     }
 
-    fn get_ok_err_streams(att: &Options, fmt_default: &str) -> Self {
+    fn get_ok_err_streams(att: &Options, fmt_default: &str, ctx_default: &str) -> Self {
         let ok_log = att.ok_log();
         let err_log = att.err_log();
         let fmt = att.fmt().unwrap_or(fmt_default);
+        let ctx = att.ctx().unwrap_or(ctx_default).to_string();
 
         let ok_expr = match ok_log {
             Some(loglevel) => {
@@ -48,7 +55,11 @@ impl FormattedAttributes {
             }
             None => quote! {()},
         };
-        FormattedAttributes { ok_expr, err_expr }
+        FormattedAttributes {
+            ok_expr,
+            err_expr,
+            ctx,
+        }
     }
 }
 
@@ -58,6 +69,7 @@ struct NamedOptions {
     ok: Option<Ident>,
     err: Option<Ident>,
     fmt: Option<String>,
+    ctx: Option<String>,
 }
 
 struct Options {
@@ -83,6 +95,10 @@ impl Options {
 
     pub fn fmt(&self) -> Option<&str> {
         self.named.fmt.as_ref().map(String::as_str)
+    }
+
+    pub fn ctx(&self) -> Option<&str> {
+        self.named.ctx.as_ref().map(String::as_str)
     }
 }
 
@@ -176,25 +192,30 @@ fn generate_function(
     closure: &ExprClosure,
     expressions: &FormattedAttributes,
     result: bool,
-    name: String,
+    function_name: String,
+    ctx: &str,
 ) -> Result<ItemFn> {
-    let FormattedAttributes { ok_expr, err_expr } = expressions;
+    let FormattedAttributes {
+        ok_expr,
+        err_expr,
+        ctx,
+    } = expressions;
     let code = if result {
         quote! {
             fn temp() {
-                ::instrumented::inc_called_counter_for(#name);
-                ::instrumented::inc_inflight_for(#name);
-                let timer = ::instrumented::get_timer_for(#name);
+                ::instrumented::inc_called_counter_for(#function_name, #ctx);
+                ::instrumented::inc_inflight_for(#function_name, #ctx);
+                let timer = ::instrumented::get_timer_for(#function_name, #ctx);
                 (#closure)()
                     .map(|result| {
                         #ok_expr;
-                        ::instrumented::dec_inflight_for(#name);
+                        ::instrumented::dec_inflight_for(#function_name, #ctx);
                         result
                     })
                     .map_err(|err| {
                         #err_expr;
-                        ::instrumented::inc_error_counter_for(#name);
-                        ::instrumented::dec_inflight_for(#name);
+                        ::instrumented::inc_error_counter_for(#function_name, #ctx);
+                        ::instrumented::dec_inflight_for(#function_name, #ctx);
                         err
                     })
             }
@@ -202,12 +223,12 @@ fn generate_function(
     } else {
         quote! {
             fn temp() {
-                ::instrumented::inc_called_counter_for(#name);
-                ::instrumented::inc_inflight_for(#name);
-                let timer = ::instrumented::get_timer_for(#name);
+                ::instrumented::inc_called_counter_for(#function_name, #ctx);
+                ::instrumented::inc_inflight_for(#function_name, #ctx);
+                let timer = ::instrumented::get_timer_for(#function_name, #ctx);
                 let result = (#closure)();
                 #ok_expr;
-                ::instrumented::dec_inflight_for(#name);
+                ::instrumented::dec_inflight_for(#function_name, #ctx);
                 result
             }
         }
@@ -224,12 +245,14 @@ pub fn instrument(
     let attr = parse_macro_input!(attr as AttributeArgs);
     let original_fn: ItemFn = parse_macro_input!(item as ItemFn);
     let fmt_default = original_fn.ident.to_string() + "() => {:?}";
-    let parsed_attributes = match FormattedAttributes::parse_attributes(&attr, &fmt_default) {
-        Ok(val) => val,
-        Err(err) => {
-            return err.write_errors().into();
-        }
-    };
+    let ctx_default = "default";
+    let parsed_attributes =
+        match FormattedAttributes::parse_attributes(&attr, &fmt_default, &ctx_default) {
+            Ok(val) => val,
+            Err(err) => {
+                return err.write_errors().into();
+            }
+        };
 
     let closure = make_closure(&original_fn);
     let is_result = check_if_return_result(&original_fn);
@@ -238,6 +261,7 @@ pub fn instrument(
         &parsed_attributes,
         is_result,
         original_fn.ident.to_string(),
+        &parsed_attributes.ctx,
     )
     .expect("Failed Generating Function");
     replace_function_headers(original_fn, &mut new_fn);

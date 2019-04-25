@@ -23,13 +23,13 @@ fn my_func_with_ok_result() -> Result<String, MyError> {
     Ok(String::from("hello world"))
 }
 
-#[instrument(INFO)]
-fn my_func_with_err_result() -> Result<String, MyError> {
+#[instrument(INFO, ctx = "my_context")]
+fn my_func_with_err_result() -> Result<String, crate::MyError> {
     use std::{thread, time};
     let ten_millis = time::Duration::from_millis(10);
     thread::sleep(ten_millis);
 
-    Err(MyError)
+    Err(crate::MyError)
 }
 
 fn main() {
