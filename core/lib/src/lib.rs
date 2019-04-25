@@ -11,20 +11,21 @@
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
-
 extern crate hyper;
 extern crate prometheus;
 #[allow(unused_imports)]
 #[macro_use]
 extern crate instrumented_codegen;
+
 #[doc(hidden)]
 pub use instrumented_codegen::*;
+#[doc(hidden)]
+pub use prometheus::*;
 
 use hyper::http::StatusCode;
 use hyper::rt::Future;
 use hyper::service::service_fn_ok;
 use hyper::{Body, Request, Response, Server};
-use prometheus::{Encoder, Registry, TextEncoder};
 
 #[cfg(all(target_os = "linux"))]
 fn register_default_process_collector(reg: &Registry) -> Result<()> {
@@ -169,6 +170,6 @@ pub fn init(addr: &str) {
 }
 
 /// Register a collector with the global registry.
-pub fn register(c: Box<prometheus::core::Collector>) -> Result<(), prometheus::Error> {
+pub fn register(c: Box<prometheus::core::Collector>) -> Result<()> {
     DEFAULT_REGISTRY.register(c)
 }
