@@ -40,6 +40,7 @@ fn register_default_process_collector(reg: &Registry) -> Result<()> {
 
 lazy_static! {
     static ref DEFAULT_REGISTRY: prometheus::Registry = {
+        #[allow(clippy::let_and_return)]
         let reg = prometheus::Registry::default();
 
         // Register a default process collector.

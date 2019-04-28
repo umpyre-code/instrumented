@@ -188,6 +188,7 @@ fn replace_function_headers(original: ItemFn, new: &mut ItemFn) {
     new.block = block;
 }
 
+#[allow(unused)]
 fn generate_function(
     closure: &ExprClosure,
     expressions: &FormattedAttributes,
