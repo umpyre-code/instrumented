@@ -31,7 +31,7 @@ use hyper::service::service_fn_ok;
 use hyper::{Body, Request, Response, Server};
 
 #[cfg(all(target_os = "linux"))]
-fn register_default_process_collector(reg: &Registry) -> Result<()> {
+fn register_default_process_collector(reg: &prometheus::Registry) -> Result<()> {
     use ::prometheus::process_collector::ProcessCollector;
 
     let pc = ProcessCollector::for_self();
@@ -39,7 +39,7 @@ fn register_default_process_collector(reg: &Registry) -> Result<()> {
 }
 
 lazy_static! {
-    static ref DEFAULT_REGISTRY: prometheus::Registry = {
+    static ref DEFAULT_REGISTRY: ::prometheus::Registry = {
         #[allow(clippy::let_and_return)]
         let reg = ::prometheus::Registry::default();
 
