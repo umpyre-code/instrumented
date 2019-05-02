@@ -31,7 +31,7 @@ use hyper::service::service_fn_ok;
 use hyper::{Body, Request, Response, Server};
 
 #[cfg(all(target_os = "linux"))]
-fn register_default_process_collector(reg: &prometheus::Registry) -> Result<()> {
+fn register_default_process_collector(reg: &::prometheus::Registry) -> ::prometheus::Result<()> {
     use ::prometheus::process_collector::ProcessCollector;
 
     let pc = ProcessCollector::for_self();
@@ -175,6 +175,6 @@ pub fn init(addr: &str) {
 }
 
 /// Register a collector with the global registry.
-pub fn register(c: Box<prometheus::core::Collector>) -> prometheus::Result<()> {
+pub fn register(c: Box<::prometheus::core::Collector>) -> ::prometheus::Result<()> {
     DEFAULT_REGISTRY.register(c)
 }
