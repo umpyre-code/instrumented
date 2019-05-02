@@ -32,7 +32,7 @@ use hyper::{Body, Request, Response, Server};
 
 #[cfg(all(target_os = "linux"))]
 fn register_default_process_collector(reg: &Registry) -> Result<()> {
-    use prometheus::process_collector::ProcessCollector;
+    use ::prometheus::process_collector::ProcessCollector;
 
     let pc = ProcessCollector::for_self();
     reg.register(Box::new(pc))
@@ -41,7 +41,7 @@ fn register_default_process_collector(reg: &Registry) -> Result<()> {
 lazy_static! {
     static ref DEFAULT_REGISTRY: prometheus::Registry = {
         #[allow(clippy::let_and_return)]
-        let reg = prometheus::Registry::default();
+        let reg = ::prometheus::Registry::default();
 
         // Register a default process collector.
         #[cfg(all(target_os = "linux"))]
