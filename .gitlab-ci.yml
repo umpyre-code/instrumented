@@ -37,12 +37,12 @@ create builder:
     - export DOCKER_HOST="${DOCKER_HOST:-tcp://localhost:2375/}"
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE/builder:latest || true
-    - docker pull rustlang/rust:nightly || true
+    - docker pull rust:latest || true
   script:
     - >
       docker build -f Dockerfile.builder
       --cache-from $CI_REGISTRY_IMAGE/builder:latest
-      --cache-from rustlang/rust:nightly
+      --cache-from rust:latest
       --tag $CI_REGISTRY_IMAGE/builder:latest
       .
     - docker push $CI_REGISTRY_IMAGE/builder:latest
