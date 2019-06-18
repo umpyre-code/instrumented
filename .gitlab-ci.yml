@@ -7,7 +7,7 @@ stages:
   - publish
 
 variables:
-  SCCACHE_GCS_BUCKET: btm-build-cache
+  SCCACHE_GCS_BUCKET: umpyre-sccache
   SCCACHE_GCS_RW_MODE: READ_WRITE
   SCCACHE_GCS_KEY_PATH: /tmp/storage-key.json
   DOCKER_DRIVER: overlay2
