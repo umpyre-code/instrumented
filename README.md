@@ -1,3 +1,5 @@
+[![pipeline status](https://gitlab.com/umpyre-code/instrumented/badges/master/pipeline.svg)](https://gitlab.com/umpyre-code/instrumented/commits/master) [![coverage report](https://gitlab.com/umpyre-code/instrumented/badges/master/coverage.svg)](https://gitlab.com/umpyre-code/instrumented/commits/master)
+
 # Instrumented 🎸
 
 Observe your service.
