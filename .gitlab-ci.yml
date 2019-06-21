@@ -4,7 +4,6 @@ stages:
   - build
   - test
   - checks
-  - publish
 
 variables:
   SCCACHE_GCS_BUCKET: umpyre-sccache
