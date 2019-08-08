@@ -175,6 +175,6 @@ pub fn init(addr: &str) {
 }
 
 /// Register a collector with the global registry.
-pub fn register(c: Box<::prometheus::core::Collector>) -> ::prometheus::Result<()> {
+pub fn register(c: Box<dyn ::prometheus::core::Collector>) -> ::prometheus::Result<()> {
     DEFAULT_REGISTRY.register(c)
 }

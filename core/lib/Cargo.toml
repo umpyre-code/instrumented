@@ -9,5 +9,5 @@ hyper = "0.12"
 instrumented-codegen = { path = "../codegen" }
 lazy_static = "1.0"
 log = "0.4"
-prometheus = { git = "https://github.com/pingcap/rust-prometheus.git",  features = ["nightly", "process"]}
+prometheus = { version = "0.7", features = ["nightly", "process"]}
 tokio = "0.1"
