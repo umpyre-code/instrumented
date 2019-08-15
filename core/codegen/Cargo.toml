@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 darling = "0.9"
 proc-macro2 = "0.4"
-quote = "0.6"
+quote = "1.0"
 syn = { version = "0.15", features = ["full"] }
 
 [lib]
