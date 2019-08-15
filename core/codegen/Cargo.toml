@@ -5,7 +5,7 @@ authors = ["Brenden Matthews <brenden@diddyinc.com>"]
 edition = "2018"
 
 [dependencies]
-darling = "0.9"
+darling = "0.10"
 proc-macro2 = "0.4"
 quote = "0.6"
 syn = { version = "0.15", features = ["full"] }
