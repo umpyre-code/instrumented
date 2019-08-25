@@ -6,6 +6,9 @@ edition = "2018"
 license = "MIT"
 description = "Codegen lib for instrumented crate"
 repository = "https://github.com/umpyre-code/instrumented"
+readme = "../../README.md"
+categories = ["development-tools", "development-tools::build-utils"]
+keywords = ["instrument", "metrics", "monitoring", "instrumentation"]
 
 [dependencies]
 darling = "0.10"
