@@ -7,7 +7,7 @@ license = "MIT"
 description = "instrument your code"
 repository = "https://github.com/umpyre-code/instrumented"
 readme = "../../README.md"
-categories = ["development-tools", "development-tools::build-utils"]
+categories = ["development-tools", "development-tools::debugging", "development-tools::profiling", "development-tools::testing"]
 keywords = ["instrument", "metrics", "monitoring", "instrumentation"]
 
 [dependencies]
