@@ -18,3 +18,7 @@ syn = { version = "1.0", features = ["full"] }
 
 [lib]
 proc-macro = true
+
+[dev-dependencies]
+instrumented = "0.1"
+log = "0.4"

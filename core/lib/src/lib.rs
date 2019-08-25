@@ -68,7 +68,7 @@
 //!     assert_eq!(my_func_with_ok_result().is_ok(), true);
 //!     assert_eq!(my_func_with_err_result().is_err(), true);
 //!
-//!     let body = reqwest::get(&format!("http://!{}/metrics", addr))
+//!     let body = reqwest::get(&format!("http://{}/metrics", addr))
 //!         .unwrap()
 //!         .text()
 //!         .unwrap();

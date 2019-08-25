@@ -248,13 +248,17 @@ fn generate_function(
 ///
 /// # Example
 /// ```rust
+/// extern crate instrumented;
+/// extern crate log;
+/// use instrumented::instrument;
+///
 /// // Logs at debug level with the `special` context using a custom log format.
 /// #[instrument(DEBUG, ctx = "special", fmt = "{}")]
 /// fn my_func() -> String {
 ///     use std::{thread, time};
 ///     let ten_millis = time::Duration::from_millis(10);
 ///     thread::sleep(ten_millis);
-///     format!("slept for {} millis", ten_millis)
+///     format!("slept for {:?} millis", ten_millis)
 /// }
 /// ```
 #[proc_macro_attribute]
