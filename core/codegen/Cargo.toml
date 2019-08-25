@@ -1,0 +1,17 @@
+[package]
+name = "instrumented-codegen"
+version = "0.1.0"
+authors = ["Brenden Matthews <brenden@diddyinc.com>"]
+edition = "2018"
+license = "MIT"
+description = "Codegen lib for instrumented crate"
+repository = "https://github.com/umpyre-code/instrumented"
+
+[dependencies]
+darling = "0.10"
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "1.0", features = ["full"] }
+
+[lib]
+proc-macro = true

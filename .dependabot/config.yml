@@ -1,0 +1,22 @@
+version: 1
+update_configs:
+  - package_manager: "rust:cargo"
+    directory: "/"
+    update_schedule: "live"
+
+    default_reviewers:
+        - "brndnmtthws"
+
+  - package_manager: "rust:cargo"
+    directory: "/core/lib"
+    update_schedule: "live"
+
+    default_reviewers:
+        - "brndnmtthws"
+  
+  - package_manager: "rust:cargo"
+    directory: "/core/codegen"
+    update_schedule: "live"
+
+    default_reviewers:
+        - "brndnmtthws"

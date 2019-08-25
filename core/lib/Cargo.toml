@@ -1,0 +1,16 @@
+[package]
+name = "instrumented"
+version = "0.1.0"
+authors = ["Brenden Matthews <brenden@diddyinc.com>"]
+edition = "2018"
+license = "MIT"
+description = "instrument your code"
+repository = "https://github.com/umpyre-code/instrumented"
+
+[dependencies]
+hyper = "0.12"
+instrumented-codegen = { path = "../codegen", version = "0.1" }
+lazy_static = "1.0"
+log = "0.4"
+prometheus = { version = "0.7", features = ["nightly", "process"]}
+tokio = "0.1"
