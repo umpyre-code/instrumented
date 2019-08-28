@@ -12,7 +12,7 @@ keywords = ["instrument", "metrics", "monitoring", "instrumentation"]
 
 [dependencies]
 hyper = "0.12"
-instrumented-codegen = { path = "../codegen", version = "0.1" }
+instrumented-codegen = "0.1"
 lazy_static = "1.0"
 log = "0.4"
 prometheus = { version = "0.7", features = ["nightly", "process"]}
