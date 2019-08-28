@@ -111,7 +111,7 @@ fn register_default_process_collector(
 }
 
 lazy_static! {
-    static ref DEFAULT_REGISTRY: ::prometheus::Registry = {
+    static ref INSTRUMENTED_REGISTRY: ::prometheus::Registry = {
         use std::collections::HashMap;
 
         let prefix =  match std::env::var("METRICS_PREFIX")  {
@@ -146,7 +146,7 @@ lazy_static! {
         );
         let counter = prometheus::IntCounterVec::new(counter_opts, &["type","name","ctx"]).unwrap();
 
-        DEFAULT_REGISTRY
+        INSTRUMENTED_REGISTRY
             .register(Box::new(counter.clone())).unwrap();
 
         counter
@@ -158,7 +158,7 @@ lazy_static! {
         );
         let counter = prometheus::IntCounterVec::new(counter_opts, &["type","name","ctx","err"]).unwrap();
 
-        DEFAULT_REGISTRY
+        INSTRUMENTED_REGISTRY
             .register(Box::new(counter.clone())).unwrap();
 
         counter
@@ -170,7 +170,7 @@ lazy_static! {
         );
         let histogram = prometheus::HistogramVec::new(histogram_opts, &["type","name","ctx"]).unwrap();
 
-        DEFAULT_REGISTRY
+        INSTRUMENTED_REGISTRY
             .register(Box::new(histogram.clone())).unwrap();
 
         histogram
@@ -182,7 +182,7 @@ lazy_static! {
         );
         let gauge = prometheus::IntGaugeVec::new(gauge_opts, &["type","name","ctx"]).unwrap();
 
-        DEFAULT_REGISTRY
+        INSTRUMENTED_REGISTRY
             .register(Box::new(gauge.clone())).unwrap();
 
         gauge
@@ -236,7 +236,7 @@ pub fn init(addr: &str) {
             service_fn_ok(move |req: Request<Body>| {
                 use crate::prometheus::*;
                 if req.uri().path() == "/metrics" {
-                    let metric_families = DEFAULT_REGISTRY.gather();
+                    let metric_families = INSTRUMENTED_REGISTRY.gather();
                     let mut buffer = vec![];
                     let encoder = TextEncoder::new();
                     encoder.encode(&metric_families, &mut buffer).unwrap();
@@ -271,5 +271,5 @@ pub fn init(addr: &str) {
 
 /// Register a collector with the global registry.
 pub fn register(c: Box<dyn::prometheus::core::Collector>) -> ::prometheus::Result<()> {
-    DEFAULT_REGISTRY.register(c)
+    INSTRUMENTED_REGISTRY.register(c)
 }
