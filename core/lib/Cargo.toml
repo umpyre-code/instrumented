@@ -11,7 +11,7 @@ categories = ["development-tools", "development-tools::debugging", "development-
 keywords = ["instrument", "metrics", "monitoring", "instrumentation"]
 
 [dependencies]
-hyper = "0.12"
+hyper = "0.13"
 instrumented-codegen = "0.1"
 lazy_static = "1.0"
 log = "0.4"
