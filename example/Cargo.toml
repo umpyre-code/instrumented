@@ -13,4 +13,4 @@ keywords = ["instrument", "metrics", "monitoring", "instrumentation"]
 [dependencies]
 instrumented = { path = "../core/lib" }
 log = "0.4"
-reqwest = "0.9"
+reqwest = "0.10"
