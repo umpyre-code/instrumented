@@ -15,7 +15,7 @@ hyper = "0.12"
 instrumented-codegen = "0.1"
 lazy_static = "1.0"
 log = "0.4"
-prometheus = { version = "0.7", features = ["nightly", "process"]}
+prometheus = { version = "0.10", features = ["nightly", "process"]}
 tokio = "0.1"
 
 [dev-dependencies]
